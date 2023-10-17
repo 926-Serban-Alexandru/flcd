@@ -1,0 +1,50 @@
+program = statement{statement}
+
+statement = let_declaration
+           | assignment
+           | read_statement
+           | write_statement
+           | if_statement
+           | while_statement
+           | for_statement
+
+let_declaration = "let" identifier{","identifier} ":" type ";"
+
+type = "integer"
+	|"char"
+	|"integer_array""["number"]"
+	|"bool"
+	|"string_array""["number"]"
+
+assignment = identifier "=" experssion ";"
+
+read_statement = "read" "(" identifier ")" ";"
+
+write_statement = "write" "(" string_literal {"," identifier} ")" ";"
+
+if_statement = "if" condition "then" "{" statement{statement} "}" "else" "{" statement{statement} "}"
+
+while_statement = "while" condition "{" statement{statement} "}"
+
+for_statement = "for" "(" assignment ";" condition ";" assignment ")" "{" statement{statement} "}"
+
+condition = expression {relational_operator expression};
+
+expression = factor {["+" , "-", "*", "%", "/"] factor}
+
+factor = identifier | number
+
+string_literal = """ [letter , digit , "=" , "+" , "-", "*", "%", "/"...] {letter , digit , "=" , "+" , "-", "*", "%", "/"...} """
+
+identifier = ["_" , letter] {"_" , letter , digit}
+
+number = non_zero_digit{digit}
+
+relational_operator = "<" | "<=" | "=" | "!=" | ">=" | ">"
+
+letter  = "A" | "B" | "C" | ... | "Z" | "a" | ... "z"
+
+digit   = "0" | "1" | "2" | ... | "9"
+
+non_zero_digit = "1" | "2" | ... | "9"
+

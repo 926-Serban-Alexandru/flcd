@@ -1,0 +1,57 @@
+#p1.compute max of 2 numbers
+
+let a, b : integer;
+let max : integer;
+read(a);
+read(b);
+if(a <= b)
+   {max = b;}
+else:
+   {max = a;}
+
+write("The max nr. is :&i", max);
+
+#p2.gcd
+
+let a, b : integer;
+let r : integer;
+read(a);
+read(b);
+r = a % b;
+while(b != 0)
+{
+   r = a % b;
+   a = b;
+   b = r;
+}
+write("GCD is :&i", b);
+
+
+ 
+#p3.compute the sum of n numbers
+
+let a[100] : integer_array;
+let n : integer;
+let i : integer;
+let s : integer;
+
+read(n);
+s = 0;
+
+for(i = 1; i <= n; i+1)
+{ read(a+i);
+  s = s + a + i;
+} 
+
+write("SUM is :&i", s);
+
+
+#p1.err
+let a, b : integer;
+let max : integer;
+read(a);
+read~(b);
+if(a ~ b)
+   {max = b;}
+else:
+   {max = a;}

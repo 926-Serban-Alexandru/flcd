@@ -1,0 +1,31 @@
+Alphabet:
+a-z
+A-Z
+0-9
+_
+
+
+Lexic
+
+operators: +, -, *, /, %, ==, <, <=, >, >=, =, &&, ||
+separators: {}, (), ;, (space), (newline), ", ', :, ., ","
+reserved words: integer, let, if, else, while, write, read, char, bool, string_array, integer_array, for
+
+digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+letter = "A" | "B" | ...| "Z" | "a" | "b" | "c" | ... | "z"
+identifier = letter | letter{letter}{digit}
+
+non_zero_digit =  "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+integer_const = ["+","-"] non_zero_digit{digit} | "0"
+
+character = 'letter'|'digit'
+
+char_const = "string"
+string = char{char}
+char = letter | digit | " "
+
+integer_array_const = "[" {integer_const" , "}integer_const "]" 
+char_array_const = "[" {char_const" , "}char_const "]" 
+ 
+
+

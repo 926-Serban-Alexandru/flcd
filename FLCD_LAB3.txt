@@ -1,0 +1,110 @@
+https://github.com/926-Serban-Alexandru/flcd 
+
+
+The HashTable class is a basic implementation of a hash table with methods for adding, checking the pre
+sence of, and retrieving the position of elements
+The SymbolTable class is initialized with a specific size and uses the HashTable for storing symbols.
+
+HashTable:
+-Constructor (__init__):
+The class is initialized with a capacity, which determines the number of buckets in the hash table.
+An empty list is created to represent the hash table with ’capacity’ empty buckets.
+The capacity attribute is set to the given capacity
+
+-get_capacity(self) Method:
+This method simply returns the capacity of the hash table
+
+-hash(self, key) Method:
+This method is used to hash keys, which can be integers or strings.
+If the key is an integer, it computes the hash value by taking the modulo of the key with the capacity.
+If the key is a string, it uses a basic string hashing algorithm to compute the hash value.(this algorith is fro
+m the internet)
+
+-contains_hash(self, key) Method:
+This method checks if the hash table contains a given key.
+It first computes the hash value for the key.
+Then, it iterates through the list at the computed hash value and checks if the key exists in that list.
+If it finds the key, it returns True; otherwise, it returns False.
+
+-get_hash_value(self, key) Method:
+This method returns the hash value for a given key. It is used to determine the bucket (list) where the key
+will be stored.
+It calls the hash method and returns the result.
+
+-add_hash(self, key) Method:
+This method is used to add a key to the hash table.
+It computes the hash value for the key and appends the key to the list at the computed hash value.
+If multiple keys hash to the same value, they will be stored in the same bucket as a list.
+But checks so no 2 exact values are added
+
+-__str__(self) Method:
+This method provides a string representation of the hash table.
+It returns a string representation of the list of buckets, which shows the keys stored in each bucket.
+
+SymbolTable:
+-Constructor (__init__):
+The SymbolTable is initialized with a given size.
+It creates an instance of the HashTable called hash_table with the same size. This HashTable will be use
+d to store symbols.
+
+-add_hash(self, name) Method:
+This method allows you to add a name (symbol) to the symbol table.
+It delegates the actual addition of the name to the add method of the underlying HashTable (in this case, t
+he HashTable that was created during initialization).
+The add method in the HashTable calculates the hash value for the name (using the hashing algorithm de
+fined in the HashTable class) and inserts the name into the appropriate bucket.
+
+-get_hashTable(self) Method:
+Getter for the hash table
+
+-check_hash(self, name) Method:
+This method checks if the symbol table contains a given name (symbol).
+It delegates the check to the contains method of the underlying HashTable.
+The contains method in the HashTable calculates the hash value for the name and then searches for it in
+the appropriate bucket.
+
+-get_position_hash(self, name) Method:
+This method retrieves the position (bucket index) where a given name would be stored in the symbol table
+.
+It delegates the retrieval to the get_position method of the underlying HashTable. The get_position metho
+d calculates the hash value for the name and returns the bucket index.
+
+-__str__(self) Method:
+This method provides a string representation of the SymbolTable.
+It includes the string representation of the underlying HashTable. The str(self.hash_table) part will call the
+__str__ method of the HashTable to produce a string representation of the hash table.
+
+
+The Scanner class uses the Symbol table class twice. One use for constants(self.constants) and the other for identifiers(self.identifiers)
+It parses and tokenizes the program given as input and it outputs the file ST.out(where it shows the symbol tables) and the file PIF.out(where it shows the program internal form)
+Scanner:
+Constructor (__init__):
+    - Initializes the Scanner with a filename representing the program source.
+    - Creates symbol tables for constants and identifiers.
+    - Initializes lists for tokens and the Program Internal Form (PIF).
+    - Calls the tokenize_program method to tokenize the program source.
+    - Calls the make_pif method to generate the Program Internal Form.
+
+    tokenize_program(self) Method:
+    - Tokenizes the program source by applying regular expressions to extract tokens.
+    - Manages symbol tables for constants and identifiers.
+    - Raises a ValueError if an invalid character is found in the program source.
+    - Returns a list of tokens.
+
+    make_pif(self) Method:
+    - Creates the Program Internal Form (PIF) based on the tokenized program.
+    - Uses symbol tables for constants and identifiers to generate PIF entries.
+    - PIF entries are in the format ['idi'/'idc'/'reserved_word'/'operator', position].
+    - Returns the generated Program Internal Form (PIF).
+
+    write_constants_and_identifiers(self, filename) Method:
+    - Writes the Constants and Identifiers tables to a specified file.
+    - Uses SymbolTable methods to retrieve and format the tables.
+    - Writes "Constants table" followed by the Constants table.
+    - Writes 10 empty lines.
+    - Writes "Identifiers table" followed by the Identifiers table.
+
+    write_pif(self, filename) Method:
+    - Writes the Program Internal Form (PIF) to a specified file.
+    - Writes "PIF table" followed by the PIF entries.
+

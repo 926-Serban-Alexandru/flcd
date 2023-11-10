@@ -1,0 +1,10 @@
+let a , b : integer;
+let max : integer;
+read(a);
+read(b);
+if(a <= b)
+   {max = b;}
+else:
+   {max = a;}
+
+write("The max nr. is :&i", max);

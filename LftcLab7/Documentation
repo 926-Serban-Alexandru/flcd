@@ -1,0 +1,44 @@
+A class representing a Finite Automaton (FA).
+
+    Attributes:
+    - states (list): List of states in the finite automaton.
+    - alphabet (list): List of symbols in the alphabet of the finite automaton.
+    - transitions (dict): Dictionary representing state transitions with keys as (source_state, symbol) tuple and values as destination_state.
+    - initial_state (str): The initial state of the finite automaton.
+    - final_states (list): List of final states in the finite automaton.
+
+    Methods:
+    - display_states(): Displays the set of states in the finite automaton.
+    - display_alphabet(): Displays the alphabet of the finite automaton.
+    - display_transitions(): Displays the transition function of the finite automaton.
+    - display_initial_state(): Displays the initial state of the finite automaton.
+    - display_final_states(): Displays the set of final states in the finite automaton.
+    - is_sequence_accepted(sequence): Verifies if the given sequence is accepted by the finite automaton.
+       It simulates the behavior of the finite automaton by traversing through its states based on the input sequence
+       and checking whether the final state after processing the entire sequence is one of the designated final states.
+
+    Example Usage:
+
+    # Creating a Finite Automaton
+    fa = FiniteAutomaton(states, alphabet, transitions, initial_state, final_states)
+
+    # Displaying information about the Finite Automaton
+    fa.display_states()
+    fa.display_alphabet()
+    fa.display_transitions()
+    fa.display_initial_state()
+    fa.display_final_states()
+
+    # Verifying a sequence
+    result = fa.is_sequence_accepted("abaab")
+    print("Sequence accepted" if result else "Sequence not accepted")
+
+   Written in EBNF the FA.in:
+   states         ::= identifier+
+   identifier     ::= letter (letter | digit)*
+   alphabet       ::= symbol+
+   symbol         ::= letter
+   initial_state  ::= identifier
+   final_states   ::= identifier+
+   digit          ::= "0" | "1" | "2" | ... | "9"
+   letter         ::= "a" | "b" | "c" | ... | "z" | "A" | "B" | "C" | ... | "Z"

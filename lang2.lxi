@@ -1,0 +1,53 @@
+%{
+#include "y.tab.h"
+%}
+
+%%
+"let"               { return LET; }
+"integer"           { return INTEGER; }
+"char"              { return CHAR; }
+"integer_array"     { return INTEGER_ARRAY; }
+"bool"              { return BOOL; }
+"string_array"      { return STRING_ARRAY; }
+":"                 { return ':'; }
+";"                 { return ';'; }
+","                 { return ','; }
+"="                 { return '='; }
+"read"              { return READ; }
+"write"             { return WRITE; }
+"if"                { return IF; }
+"then"              { return THEN; }
+"else"              { return ELSE; }
+"while"             { return WHILE; }
+"for"               { return FOR; }
+"("                 { return '('; }
+")"                 { return ')'; }
+"{"                 { return '{'; }
+"}"                 { return '}'; }
+"+"                 { return PLUS; }
+"-"                 { return MINUS; }
+"*"                 { return TIMES; }
+"%"                 { return MOD; }
+"/"                 { return DIVIDE; }
+"<"                 { return LESS; }
+"<="                { return LESS_EQUAL; }
+"="                 { return EQUAL; }
+"!="                { return NOT_EQUAL; }
+">="                { return GREATER_EQUAL; }
+">"                 { return GREATER; }
+
+[ \t\n]+            /* skip whitespace */
+"/*"([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/ { /* skip comments */ }
+
+\"([^\\\"]|\\.)*\"  { yylval.str_val = strdup(yytext + 1);
+                      return STRING_LITERAL; }
+
+[_a-zA-Z][_a-zA-Z0-9]* { yylval.str_val = strdup(yytext);
+                        return IDENTIFIER; }
+
+[1-9][0-9]*         { yylval.int_val = atoi(yytext);
+                      return NUMBER; }
+"0"                 { yylval.int_val = 0;
+                      return NUMBER; }
+
+%%

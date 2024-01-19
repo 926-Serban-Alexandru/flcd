@@ -1,0 +1,146 @@
+GitHub:https://github.com/926-Serban-Alexandru/flcd
+lang.lxi:
+%{
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+int lines = 1;
+%}
+
+%option noyywrap
+%option caseless
+
+DIGIT [0-9]
+NON_ZERO_DIGIT [1-9]
+INT_CONSTANT [+-]?{NON_ZERO_DIGIT}{DIGIT}*|0
+LETTER [a-zA-Z_]
+SIGNS [!#%^*+-/<=>_.,:]
+STRING_CONSTANT (\"({LETTER}|{DIGIT}|_|{SIGNS})*\")
+IDENTIFIER {LETTER}({LETTER}|{DIGIT})*
+BAD_IDENTIFIER ({DIGIT})+{LETTER}({LETTER}|{DIGIT})*
+
+%%
+
+"let"|"if"|"else"|"while"|"for"|"write"|"read"|"bool"|"integer"|"char"|"string_array"|"integer_array" {
+    printf("RESERVED WORD: %s\n", yytext);
+    return 1; // Assuming a unique value for each reserved word
+}
+
+"+"|"-"|"*"|"/"|"%"|">="|"<="|">"|"<"|"=="|"="|"!="|"&&"|"||" {
+    printf("OPERATOR: %s\n", yytext);
+    return 2; // Assuming a unique value for each operator
+}
+
+"{"|"}"|"\("|"\)"|";"|","|"'"|":"|"."|"," {
+    printf("SEPARATORS: %s\n", yytext);
+    return 3; // Assuming a unique value for each separator
+}
+
+{IDENTIFIER} {
+    printf("IDENTIFIER: %s\n", yytext);
+    return 4; // Assuming a unique value for identifiers
+}
+
+{BAD_IDENTIFIER} {
+    printf("Error at token %s at line %d\n", yytext, lines);
+    exit(1);
+}
+
+{INT_CONSTANT} {
+    printf("INTEGER CONSTANT: %s\n", yytext);
+    return 5; // Assuming a unique value for integer constants
+}
+
+{STRING_CONSTANT} {
+    printf("STRING CONSTANT: %s\n", yytext);
+    return 6; // Assuming a unique value for string constants
+}
+
+[ \t]+ {}
+
+"//"(.)*[\n]+ {++lines;}
+
+[\n]+ {++lines;}
+
+. {
+    printf("Error at token %s at line %d\n", yytext, lines);
+    exit(1);
+}
+
+%%
+
+I use winflex to run commands:
+"C:\Users\Alex Serban\Downloads\win_flex_bison-latest\win_flex.exe" lang.lxi
+gcc lex.yy.c -o scanner -lfltlib
+scanner.exe < p1.txt
+
+The syntax from lab 1: program = statement{statement}
+
+statement = let_declaration
+           | assignment
+           | read_statement
+           | write_statement
+           | if_statement
+           | while_statement
+           | for_statement
+
+let_declaration = "let" identifier{","identifier} ":" type ";"
+
+type = "integer"
+	|"char"
+	|"integer_array""["number"]"
+	|"bool"
+	|"string_array""["number"]"
+
+assignment = identifier "=" experssion ";"
+
+read_statement = "read" "(" identifier ")" ";"
+
+write_statement = "write" "(" string_literal {"," identifier} ")" ";"
+
+if_statement = "if" condition "then" "{" statement{statement} "}" "else" "{" statement{statement} "}"
+
+while_statement = "while" condition "{" statement{statement} "}"
+
+for_statement = "for" "(" assignment ";" condition ";" assignment ")" "{" statement{statement} "}"
+
+condition = expression {relational_operator expression};
+
+expression = factor {["+" , "-", "*", "%", "/"] factor}
+
+factor = identifier | number
+
+string_literal = """ [letter , digit , "=" , "+" , "-", "*", "%", "/"...] {letter , digit , "=" , "+" , "-", "*", "%", "/"...} """
+
+identifier = ["_" , letter] {"_" , letter , digit}
+
+number = non_zero_digit{digit}
+
+relational_operator = "<" | "<=" | "=" | "!=" | ">=" | ">"
+
+letter  = "A" | "B" | "C" | ... | "Z" | "a" | ... "z"
+
+digit   = "0" | "1" | "2" | ... | "9"
+
+non_zero_digit = "1" | "2" | ... | "9"
+The lexic from lab 1: Lexic
+
+operators: +, -, *, /, %, ==, <, <=, >, >=, =, &&, ||
+separators: {}, (), ;, (space), (newline), ", ', :, ., ","
+reserved words: integer, let, if, else, while, write, read, char, bool, string_array, integer_array, for
+
+digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+letter = "A" | "B" | ...| "Z" | "a" | "b" | "c" | ... | "z"
+identifier = letter | letter{letter}{digit}
+
+non_zero_digit =  "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+integer_const = ["+","-"] non_zero_digit{digit} | "0"
+
+character = 'letter'|'digit'
+
+char_const = "string"
+string = char{char}
+char = letter | digit | " "
+
+integer_array_const = "[" {integer_const" , "}integer_const "]" 
+char_array_const = "[" {char_const" , "}char_const "]" 

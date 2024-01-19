@@ -1,0 +1,208 @@
+GitHub:https://github.com/926-Serban-Alexandru/flcd
+lang.y
+%{
+#include <stdio.h>
+%}
+
+%token LET INTEGER CHAR INTEGER_ARRAY BOOL STRING_ARRAY READ WRITE IF THEN ELSE WHILE FOR
+%token PLUS MINUS TIMES MOD DIVIDE
+%token LESS LESS_EQUAL EQUAL NOT_EQUAL GREATER_EQUAL GREATER
+%token IDENTIFIER NUMBER STRING_LITERAL
+
+%%
+
+program: statement_list
+
+statement_list: statement
+             | statement_list statement
+
+statement: let_declaration
+         | assignment
+         | read_statement
+         | write_statement
+         | if_statement
+         | while_statement
+         | for_statement
+
+let_declaration: LET identifier_list ':' type ';'
+
+identifier_list: identifier
+               | identifier_list ',' identifier
+
+type: INTEGER
+    | CHAR
+    | INTEGER_ARRAY '[' NUMBER ']'
+    | BOOL
+    | STRING_ARRAY '[' NUMBER ']'
+
+assignment: identifier '=' expression ';'
+
+read_statement: READ '(' identifier ')' ';'
+
+write_statement: WRITE '(' string_literal identifier_list ')' ';'
+
+if_statement: IF condition THEN '{' statement_list '}' ELSE '{' statement_list '}'
+
+while_statement: WHILE condition '{' statement_list '}'
+
+for_statement: FOR '(' assignment ';' condition ';' assignment ')' '{' statement_list '}'
+
+condition: expression
+         | expression LESS expression
+         | expression LESS_EQUAL expression
+         | expression EQUAL expression
+         | expression NOT_EQUAL expression
+         | expression GREATER_EQUAL expression
+         | expression GREATER expression
+
+expression: factor
+          | expression PLUS factor
+          | expression MINUS factor
+          | expression TIMES factor
+          | expression MOD factor
+          | expression DIVIDE factor
+
+factor: identifier
+      | number
+
+string_literal: '"' characters '"'
+
+characters: /* empty */
+          | characters letter_or_digit_or_symbol
+
+letter_or_digit_or_symbol: LETTER
+                      | DIGIT
+                      | '=' | '+' | '-' | '*' | '%' | '/'
+
+identifier: UNDERSCORE LETTER
+          | UNDERSCORE LETTER_OR_DIGIT
+          | LETTER LETTER_OR_DIGIT
+
+number: NON_ZERO_DIGIT
+      | NON_ZERO_DIGIT DIGIT
+      | '0'
+
+relational_operator: LESS
+                 | LESS_EQUAL
+                 | EQUAL
+                 | NOT_EQUAL
+                 | GREATER_EQUAL
+                 | GREATER
+
+LETTER: 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U' | 'V' | 'W' | 'X' | 'Y' | 'Z' | 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' | 'i' | 'j' | 'k' | 'l' | 'm' | 'n' | 'o' | 'p' | 'q' | 'r' | 's' | 't' | 'u' | 'v' | 'w' | 'x' | 'y' | 'z'
+DIGIT: '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
+NON_ZERO_DIGIT: '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
+UNDERSCORE: '_'
+LETTER_OR_DIGIT: LETTER | DIGIT
+
+%%
+
+lang2.lxi: %{
+#include "y.tab.h"
+%}
+
+%%
+"let"               { return LET; }
+"integer"           { return INTEGER; }
+"char"              { return CHAR; }
+"integer_array"     { return INTEGER_ARRAY; }
+"bool"              { return BOOL; }
+"string_array"      { return STRING_ARRAY; }
+":"                 { return ':'; }
+";"                 { return ';'; }
+","                 { return ','; }
+"="                 { return '='; }
+"read"              { return READ; }
+"write"             { return WRITE; }
+"if"                { return IF; }
+"then"              { return THEN; }
+"else"              { return ELSE; }
+"while"             { return WHILE; }
+"for"               { return FOR; }
+"("                 { return '('; }
+")"                 { return ')'; }
+"{"                 { return '{'; }
+"}"                 { return '}'; }
+"+"                 { return PLUS; }
+"-"                 { return MINUS; }
+"*"                 { return TIMES; }
+"%"                 { return MOD; }
+"/"                 { return DIVIDE; }
+"<"                 { return LESS; }
+"<="                { return LESS_EQUAL; }
+"="                 { return EQUAL; }
+"!="                { return NOT_EQUAL; }
+">="                { return GREATER_EQUAL; }
+">"                 { return GREATER; }
+
+[ \t\n]+            /* skip whitespace */
+"/*"([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/ { /* skip comments */ }
+
+\"([^\\\"]|\\.)*\"  { yylval.str_val = strdup(yytext + 1);
+                      return STRING_LITERAL; }
+
+[_a-zA-Z][_a-zA-Z0-9]* { yylval.str_val = strdup(yytext);
+                        return IDENTIFIER; }
+
+[1-9][0-9]*         { yylval.int_val = atoi(yytext);
+                      return NUMBER; }
+"0"                 { yylval.int_val = 0;
+                      return NUMBER; }
+
+%%
+The syntax from lab1:
+program = statement{statement}
+
+statement = let_declaration
+           | assignment
+           | read_statement
+           | write_statement
+           | if_statement
+           | while_statement
+           | for_statement
+
+let_declaration = "let" identifier{","identifier} ":" type ";"
+
+type = "integer"
+	|"char"
+	|"integer_array""["number"]"
+	|"bool"
+	|"string_array""["number"]"
+
+assignment = identifier "=" experssion ";"
+
+read_statement = "read" "(" identifier ")" ";"
+
+write_statement = "write" "(" string_literal {"," identifier} ")" ";"
+
+if_statement = "if" condition "then" "{" statement{statement} "}" "else" "{" statement{statement} "}"
+
+while_statement = "while" condition "{" statement{statement} "}"
+
+for_statement = "for" "(" assignment ";" condition ";" assignment ")" "{" statement{statement} "}"
+
+condition = expression {relational_operator expression};
+
+expression = factor {["+" , "-", "*", "%", "/"] factor}
+
+factor = identifier | number
+
+string_literal = """ [letter , digit , "=" , "+" , "-", "*", "%", "/"...] {letter , digit , "=" , "+" , "-", "*", "%", "/"...} """
+
+identifier = ["_" , letter] {"_" , letter , digit}
+
+number = non_zero_digit{digit}
+
+relational_operator = "<" | "<=" | "=" | "!=" | ">=" | ">"
+
+letter  = "A" | "B" | "C" | ... | "Z" | "a" | ... "z"
+
+digit   = "0" | "1" | "2" | ... | "9"
+
+non_zero_digit = "1" | "2" | ... | "9"
+
+I have winflex and bison to run it:
+"C:\Users\Alex Serban\Downloads\win_flex_bison-latest\win_flex.exe" lang2.lxi
+"C:\Users\Alex Serban\Downloads\win_flex_bison-latest\bison.exe" -d lang.y
+gcc -o my_parser lex.yy.c y.tab.c -lwinflex
+my_parser

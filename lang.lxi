@@ -1,0 +1,68 @@
+%{
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+int lines = 1;
+%}
+
+%option noyywrap
+%option caseless
+
+DIGIT [0-9]
+NON_ZERO_DIGIT [1-9]
+INT_CONSTANT [+-]?{NON_ZERO_DIGIT}{DIGIT}*|0
+LETTER [a-zA-Z_]
+SIGNS [!#%^*+-/<=>_.,:]
+STRING_CONSTANT (\"({LETTER}|{DIGIT}|_|{SIGNS})*\")
+IDENTIFIER {LETTER}({LETTER}|{DIGIT})*
+BAD_IDENTIFIER ({DIGIT})+{LETTER}({LETTER}|{DIGIT})*
+
+%%
+
+"let"|"if"|"else"|"while"|"for"|"write"|"read"|"bool"|"integer"|"char"|"string_array"|"integer_array" {
+    printf("RESERVED WORD: %s\n", yytext);
+    return 1; // Assuming a unique value for each reserved word
+}
+
+"+"|"-"|"*"|"/"|"%"|">="|"<="|">"|"<"|"=="|"="|"!="|"&&"|"||" {
+    printf("OPERATOR: %s\n", yytext);
+    return 2; // Assuming a unique value for each operator
+}
+
+"{"|"}"|"\("|"\)"|";"|","|"'"|":"|"."|"," {
+    printf("SEPARATORS: %s\n", yytext);
+    return 3; // Assuming a unique value for each separator
+}
+
+{IDENTIFIER} {
+    printf("IDENTIFIER: %s\n", yytext);
+    return 4; // Assuming a unique value for identifiers
+}
+
+{BAD_IDENTIFIER} {
+    printf("Error at token %s at line %d\n", yytext, lines);
+    exit(1);
+}
+
+{INT_CONSTANT} {
+    printf("INTEGER CONSTANT: %s\n", yytext);
+    return 5; // Assuming a unique value for integer constants
+}
+
+{STRING_CONSTANT} {
+    printf("STRING CONSTANT: %s\n", yytext);
+    return 6; // Assuming a unique value for string constants
+}
+
+[ \t]+ {}
+
+"//"(.)*[\n]+ {++lines;}
+
+[\n]+ {++lines;}
+
+. {
+    printf("Error at token %s at line %d\n", yytext, lines);
+    exit(1);
+}
+
+%%
